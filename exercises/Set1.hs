@@ -56,11 +56,9 @@ quadruple x = double (double x)
 --   distance 0 0 1 1  ==>  1.4142135...
 --   distance 1 1 4 5  ==>  5.0
 
-squared :: Double -> Double
-squared x = x * x
-
 distance :: Double -> Double -> Double -> Double -> Double
-distance x1 y1 x2 y2 = sqrt (squared (x2 - x1) + squared (y2 - y1))
+distance x1 y1 x2 y2 = sqrt (square (x2 - x1) + square (y2 - y1))
+    where square x = x * x
 
 ------------------------------------------------------------------------------
 -- Ex 5: define the function eeny that returns "eeny" for even inputs
@@ -91,11 +89,10 @@ checkPassword password = if password == "swordfish" || password == "mellon"
 -- in grams, and returns the cost in credits.
 
 postagePrice :: Int -> Int
-postagePrice weight = if weight > 5000
-                      then 6000
-                      else if weight > 500
-                      then 300 + weight
-                      else 250
+postagePrice weight 
+    | weight > 5000 = 6000
+    | weight > 500 = 300 + weight
+    | otherwise = 250
 
 ------------------------------------------------------------------------------
 -- Ex 8: define a function isZero that returns True if it is given an
