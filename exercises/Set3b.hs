@@ -69,7 +69,7 @@ sums' i j
 
 mylast :: a -> [a] -> a
 mylast def [] = def
-mylast def (x:[]) = x
+mylast def [x] = x
 mylast def (_:xs) = mylast def xs
 
 ------------------------------------------------------------------------------
