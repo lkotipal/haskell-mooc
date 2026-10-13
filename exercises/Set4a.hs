@@ -53,8 +53,7 @@ allEqual (x:y:xs) = x == y && allEqual (y:xs)
 
 distinct :: Eq a => [a] -> Bool
 distinct [] = True
-distinct [x] = True
-distinct (x:y:xs) = x /= y && distinct (x:xs) && distinct (y:xs)
+distinct (x:xs) = if length [y | y <- xs, y == x] > 0 then False else distinct xs
 
 ------------------------------------------------------------------------------
 -- Ex 3: implement the function middle that returns the middle value
@@ -106,7 +105,12 @@ rangeOf xs = foldr max (head xs) xs - foldr min (head xs) xs
 --   longest ["bcd","def","ab"] ==> "bcd"
 
 longest :: Ord a => [[a]] -> [a]
-longest xs = foldr (\x y -> if length x < length y then x else y) (head xs) xs
+longest xs = foldr myMin (head xs) xs
+    where myMin x y
+            | length x > length y = x
+            | length x < length y = y
+            | head x < head y = x
+            | otherwise = y
 
 ------------------------------------------------------------------------------
 -- Ex 6: Implement the function incrementKey, that takes a list of
@@ -122,8 +126,9 @@ longest xs = foldr (\x y -> if length x < length y then x else y) (head xs) xs
 --   incrementKey True [(True,1),(False,3),(True,4)] ==> [(True,2),(False,3),(True,5)]
 --   incrementKey 'a' [('a',3.4)] ==> [('a',4.4)]
 
-incrementKey :: k -> [(k,v)] -> [(k,v)]
-incrementKey = todo
+incrementKey :: (Eq k, Num v) => k -> [(k,v)] -> [(k,v)]
+incrementKey _ [] = []
+incrementKey key (pair:map) = (if fst pair == key then (fst pair, snd pair + 1) else pair) : incrementKey key map
 
 ------------------------------------------------------------------------------
 -- Ex 7: compute the average of a list of values of the Fractional
@@ -138,7 +143,7 @@ incrementKey = todo
 -- length to a Fractional
 
 average :: Fractional a => [a] -> a
-average xs = todo
+average xs = sum xs / (fromIntegral $ length xs)
 
 ------------------------------------------------------------------------------
 -- Ex 8: given a map from player name to score and two players, return
@@ -157,7 +162,9 @@ average xs = todo
 --     ==> "Lisa"
 
 winner :: Map.Map String Int -> String -> String -> String
-winner scores player1 player2 = todo
+winner scores player1 player2
+    | (Map.findWithDefault 0 player1 scores) < (Map.findWithDefault 0 player2 scores) = player2
+    | otherwise = player1
 
 ------------------------------------------------------------------------------
 -- Ex 9: compute how many times each value in the list occurs. Return
